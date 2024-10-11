@@ -351,6 +351,7 @@ view: ga4_events {
 
   dimension: join_key {
     type: string
+    primary_key: yes
     sql: ${TABLE}.join_key ;;
     description: "Join key created by concatenating user_pseudo_id, event_timestamp, event_name, and a row number."
   }

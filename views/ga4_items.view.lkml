@@ -177,6 +177,7 @@ view: ga4_items {
 
   dimension: join_key {
     type: string
+    primary_key: yes
     sql: ${TABLE}.join_key ;;
     description: "Join key created by concatenating user_pseudo_id, event_timestamp, event_name, and dedup_id."
   }
