@@ -1,9 +1,16 @@
 view: ga4_events {
   sql_table_name: converteo-training-looker.ga4_dbt_lkml_project.ga4_events ;;
 
-  dimension: session_id {
+# dimensions
+  dimension: ga_session_identifier {
     type: number
     sql: ${TABLE}.session_id ;;
+    description: "Session ID extracted from event parameters."
+  }
+
+  dimension: session_id {
+    type: number
+    sql: CONCAT(${TABLE}.session_id, ${TABLE}.user_pseudo_id) ;;
     description: "Session ID extracted from event parameters."
   }
 
@@ -355,4 +362,91 @@ view: ga4_events {
     sql: ${TABLE}.join_key ;;
     description: "Join key created by concatenating user_pseudo_id, event_timestamp, event_name, and a row number."
   }
+
+# Measures
+
+  measure: total_sessions {
+    type: count_distinct
+    sql: ${session_id} ;;
+    description: "Total number of sessions."
+  }
+
+  measure: unique_events {
+    type: count_distinct
+    sql: ${event_name} ;;
+    description: "Count of distinct events that occurred."
+  }
+
+  measure: nb_events {
+    type: count
+    description: "Count of distinct events that occurred."
+  }
+
+  measure: total_event_value {
+    type: sum
+    sql: ${event_value_in_usd} ;;
+    description: "Sum of event values in USD."
+  }
+
+  measure: avg_event_value {
+    type: average
+    sql: ${event_value_in_usd} ;;
+    description: "Average value of each event in USD."
+  }
+
+  measure: total_users {
+    type: count_distinct
+    sql: ${user_pseudo_id} ;;
+    description: "Total number of distinct users."
+  }
+
+  measure: frequency {
+    type: number
+    sql: ${total_sessions} / ${total_users};;
+    description: "Frequency of Visits : total sessions / total users."
+  }
+
+  measure: ecommerce_revenue {
+    type: sum
+    sql: ${TABLE}.ecommerce_purchase_revenue ;;
+    description: "Total revenue from ecommerce transactions."
+  }
+
+  measure: ecommerce_revenue_usd {
+    type: sum
+    sql: ${TABLE}.ecommerce_purchase_revenue_in_usd ;;
+    description: "Total revenue from ecommerce transactions in USD."
+  }
+
+  measure: avg_revenue_per_transaction {
+    type: average
+    sql: ${ecommerce_purchase_revenue} ;;
+    description: "Average revenue per transaction."
+  }
+
+  measure: total_item_quantity {
+    type: sum
+    sql: ${TABLE}.ecommerce_total_item_quantity ;;
+    description: "Total quantity of items in ecommerce transactions."
+  }
+
+  measure: avg_items_per_transaction {
+    type: average
+    sql: ${ecommerce_total_item_quantity} ;;
+    description: "Average number of items per transaction."
+  }
+
+
+  measure: bounce_rate {
+    type: number
+    sql: (CASE WHEN ${event_name} = 'bounce' THEN 1 ELSE 0 END) / ${total_sessions} ;;
+    description: "Bounce rate : total bounces / total sessions."
+  }
+
+  measure: session_duration {
+    type: sum
+    sql:  ${event_timestamp} - ${event_previous_timestamp} ;;
+    description: "Duration of the session calculated from event start to end."
+  }
+
 }
