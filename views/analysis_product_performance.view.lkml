@@ -14,8 +14,6 @@ WHERE ga4_items.item_id <> "(not set)"
 GROUP BY
     1,
     2
-HAVING ga4_items_total_product_views > 0
-AND ga4_items_total_product_purchases > 0
 ORDER BY
     ga4_items_total_product_purchases DESC
 ;;
