@@ -2,6 +2,10 @@ connection: "ga4_dbt_lkml_project"
 
 include: "/views/*"
 
+explore: analysis_product_performance {
+  description: "This model computes performance metrics of products (eg. product conversion rate & number of product purchase"
+}
+
 explore: ga4_events {
   description: "This model cleans and flattens raw GA4 events data."
 
