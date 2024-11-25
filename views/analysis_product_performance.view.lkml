@@ -2,8 +2,8 @@
 view: analysis_product_performance {
   derived_table: {
   sql:  SELECT
-    ga4_items.item_name  AS ga4_items_item_name,
-    ga4_items.item_id  AS ga4_items_item_id,
+    ga4_items.item_name  AS item_name,
+    ga4_items.item_id  AS item_id,
     COUNT(CASE WHEN (( ga4_items.event_name  ) LIKE 'view_item') THEN 1 ELSE NULL END) AS ga4_items_total_product_views,
     COUNT(CASE WHEN (( ga4_items.event_name  ) LIKE 'add_to_cart') THEN 1 ELSE NULL END) AS ga4_items_total_product_add_to_carts,
     SAFE_DIVIDE(COUNT(CASE WHEN (( ga4_items.event_name  ) LIKE 'add_to_cart') THEN 1 ELSE NULL END), COUNT(CASE WHEN (( ga4_items.event_name  ) LIKE 'view_item') THEN 1 ELSE NULL END)) AS ga4_items_product_atc_rate,
@@ -44,6 +44,9 @@ ORDER BY
   }
   dimension: item_name {
     description: "Name of the item involved in the event."
+  }
+  dimension: item_id {
+    description: "ID of the item involved in the event."
   }
   }
 
